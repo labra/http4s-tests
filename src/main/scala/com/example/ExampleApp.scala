@@ -4,7 +4,7 @@ import java.util.concurrent.Executors
 
 import org.http4s.server.blaze.BlazeBuilder
 import org.http4s.server.{Server, ServerApp, ServerBuilder}
-import org.http4s.{HttpService, Service}
+import org.http4s.{HttpService, Service, Status}
 import org.http4s.dsl._
 import org.http4s.circe._
 import org.http4s.MediaType._
@@ -21,11 +21,14 @@ class ExampleApp(host: String, port: Int) {
   val service = HttpService {
 
   case GET -> Root / "hello" / name =>
-    Ok(s"Hello, $name.")
+    Ok(s"Hello, $name.").
+	  withStatus(Status.Ok)
 
    case GET -> Root / "json" / name => {
       val json = Json.fromString(name)
-      Ok(json).withContentType(Some(`Content-Type`(`application/json`)))
+      Ok(json).
+	     withStatus(Status.Ok).
+	     withContentType(Some(`Content-Type`(`application/json`)))
 	}
   }
 
